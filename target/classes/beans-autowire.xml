@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- xmlns name space, 
+    Based on xsd  we configured it tells what tag we need to write or use in the
+	xml-->
+	<!-- bean definitions here means configuring java class as spring beans -->
+	<!-- Based on the hiearachy from top to bottom bean order mentioned below it
+	is creating objects one after the other
+     it is creating objects based on the bean definition order  as mentioned below in
+	the xml 
+     configuration file or spring confiuration file-->
+	<!-- By  eager loading means- Whenever IOC container starts  it creates
+	objects for the  spring bean defined 
+    in the xml configuration file or spring configuration file -->
+     <!--dependency injection can be performed in 2 ways by IOC using spring configuration file
+          1.manual wiring -refer beans-manual.xml file for that
+          2.autowire - refer this xml
+          real time project they use autowiring using annotations only -->
+    <!--  Autowire as 4 types 
+    note - In general real time project  interface will only one implementation so in that case 
+    Autowire="byType" is recommended.
+    in rare cases in real time  project  interface will multi implementation so in that case 
+    Autowire="byName" is recommended.
+    1.byName - The field or property variable name of the class should match 
+      bean id name mentioned in the bean definition of spring xml configuration file.
+      
+      note - uncomment and execute the below example 
+      example 
+      
+      <bean id="payment" class="in.sg.beans.CreditCardPayment" />
+
+	 <bean id="debit" class="in.sg.beans.DebitCardPayment" />
+
+	<bean id="sodexo" class="in.sg.beans.SodexCardPayment" />
+
+	<bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor" autowire="byName" /> -->
+
+     <!--   
+    2.byType - The data type of the field or property variable name of the target class will 
+      always be interface need to check whether the implentation class bean is 
+      defined in the bean definition in spring configuration file
+       there are 3 cases as mentioned below.
+       case -1 
+       if only one implementation class of the interface of the variable of target class 
+        is defined ex as mentioned below 
+        
+        <bean id="debit" class="in.sg.beans.DebitCardPayment" />
+        	<bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor" autowire="byType" />
+
+       case -2 -if more than one implemenation class of the interface of the variable of target class 
+        is defined ex as mentioned below then we need to use primary attribute as mentioned below 
+        
+        	<bean id="credit" class="in.sg.beans.CreditCardPayment" />
+         <bean id="debit" class="in.sg.beans.DebitCardPayment"  primary="true"/>
+        	<bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor" autowire="byType" />
+
+       case 3 -
+       if more than one implemenation class of the interface of the variable of target class 
+        is defined ex as mentioned below then we need to use autowire-candidate attribute as mentioned below 
+        
+       	<bean id="credit" class="in.sg.beans.CreditCardPayment" />
+       	<bean id="sodexo" class="in.sg.beans.SodexCardPayment" autowire-candidate="false" />
+        <bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor" autowire="byType" />
+
+    3.constructor -Internally uses byType -if you want constructor dependency injection
+      invoked by IOC container we need to use this option in the target class bean definition 
+      as mentioned in target class PaymentProcessor autowire="constructor"
+      
+      Note - when you  configure autowire ="byName" or autowire ="byName" in the trget class bean definition
+       then IOC container or spring container will perform or do settermethod dependency injection , 
+       if you want then IOC container or spring container will perform or do constructor dependency injection
+       configure autowire ="constructor -->
+	<bean id="credit" class="in.sg.beans.CreditCardPayment" />
+
+	 <bean id="debit" class="in.sg.beans.DebitCardPayment"  primary="true"/>
+<bean id="sodexo" class="in.sg.beans.SodexCardPayment" autowire-candidate="false" />
+	<bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor" autowire="constructor" />
+
+<!--  4.no - it is default value will not perform autowiring-->
+
+</beans>

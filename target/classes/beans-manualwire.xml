@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- xmlns name space, 
+    Based on xsd  we configured it tells what tag we need to write or use in the
+	xml-->
+	<!-- bean definitions here means configuring java class as spring beans -->
+	<!-- Based on the hiearachy from top to bottom bean order mentioned below it
+	is creating objects one after the other
+     it is creating objects based on the bean definition order  as mentioned below in
+	the xml 
+     configuration file or spring confiuration file-->
+	<!-- By  eager loading means- Whenever IOC container starts  it creates
+	objects for the  spring bean defined 
+    in the xml configuration file or spring confiuration file -->
+
+    <!-- Manual wiring means programmer will inform to IOC  is dependent object  using ref attribute like below -->
+	<bean id="credit" class="in.sg.beans.CreditCardPayment" />
+
+	<bean id="debit" class="in.sg.beans.DebitCardPayment" />
+
+	<bean id="sodexo" class="in.sg.beans.SodexCardPayment" />
+
+	<bean id="paymentProcessor" class="in.sg.beans.PaymentProcessor">
+		<!--<property name="payment" ref="credit" />--> <!--
+		This line instruct ioc  to
+		perform setter injection
+		Note once configured property tag ioc container calling setter method of field
+		or property of payment of PaymentProcessor Class-->
+		<constructor-arg name="payment" ref="debit" />
+	</bean>
+
+
+</beans>
