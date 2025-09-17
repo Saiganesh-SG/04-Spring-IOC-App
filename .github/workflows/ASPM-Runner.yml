@@ -23,7 +23,7 @@ jobs:
     - name: "Configure AWS credentials"
       uses: "aws-actions/configure-aws-credentials@v4"
     - name: "Download Scanner"
-      run: "aws s3 cp s3://securin-qa-shiftleft//scanners/securin-cli//2.0.1/securin-runner\
+      run: "aws s3 cp s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-runner\
         \ ${{ env.workdir }}/src/ASPMRunner && chmod +x ${{ env.workdir }}/src/ASPMRunner"
     - name: "Run Scan"
       run: "./ASPMRunner --connector_id 1234 --account_id 1"
