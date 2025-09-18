@@ -2,7 +2,7 @@ name: "ASPM-RUNNER-ACCOUNT-1"
 on:
   pull_request:
     branches:
-      ${workflow.branches}
+      {`workflow.branches`}
     types:
       - "opened"
       - "synchronize"
@@ -15,12 +15,12 @@ on:
         default: "info"
 jobs:
   scanning:
-    runs-on: "ubuntu-latest"
+    runs-on: "`api.github.runner-os`"
     env:
       workdir: "$${ github.workspace }/wrkdir"
-      ACCOUNT_ID: "1"
-      CONNECTOR_ID: "1234"
-      API_KEY: "df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180"
+      ACCOUNT_ID: "{`workflow.accountId`}"
+      CONNECTOR_ID: "{`workflow.connectorId`}"
+      API_KEY: "{`workflow.apiKey`}"
     steps:
       - uses: "actions/checkout@v4"
         with:
@@ -33,7 +33,7 @@ jobs:
 
           RESPONSE=$(curl -s -H "x-user-id: -1" \
             -H "x-api-key: $${ env.API_KEY }" \
-            "https://slresultapi.qa.securin.io/resultapi/api/v1/accounts/%(accountId)/aws/_token/api/v1/accounts/$${ env.ACCOUNT_ID }/aws/_token")
+            "{`api.result-api.base-url`}/api/v1/accounts/$${ env.ACCOUNT_ID }/aws/_token")
 
           if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r '.accessKey')" = "null" ]; then
             echo "Failed to fetch AWS credentials"
@@ -98,4 +98,4 @@ jobs:
           
           # Remove credentials file
           rm -f ~/.aws/credentials
-          echo "✅ AWS credentials cleaned up"
+          echo "AWS credentials cleaned up"
