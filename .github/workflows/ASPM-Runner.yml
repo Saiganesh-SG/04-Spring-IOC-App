@@ -2,7 +2,7 @@ name: "ASPM-RUNNER-ACCOUNT-1"
 on:
   pull_request:
     branches:
-          - "master"
+        - "master"
     types:
       - "opened"
       - "synchronize"
@@ -15,7 +15,7 @@ on:
         default: "info"
 jobs:
   scanning:
-    runs-on: "`api.github.runner-os`"
+    runs-on: "ubuntu-latest"
     env:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "1"
