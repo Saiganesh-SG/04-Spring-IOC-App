@@ -51,17 +51,18 @@ jobs:
           unset RESPONSE ACCESS_KEY SECRET_KEY SESSION_TOKEN
           echo "AWS credentials fetched successfully"
 
-      - name: Configure AWS credentials
+      - name: Store AWS credentials as secrets
         run: |
-          # Use environment variables instead of aws configure (won't show in logs)
-          export AWS_ACCESS_KEY_ID="${{ steps.fetch-aws-creds.outputs.access_key }}"
-          export AWS_SECRET_ACCESS_KEY="${{ steps.fetch-aws-creds.outputs.secret_key }}"
-          export AWS_SESSION_TOKEN="${{ steps.fetch-aws-creds.outputs.session_token }}"
-          export AWS_DEFAULT_REGION="us-west-2"
+          # These will be automatically masked by GitHub
+          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.access_key }}"
+          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.secret_key }}"
+          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.session_token }}"
 
-          # Verify AWS configuration works
-          aws sts get-caller-identity --query Account --output text
-          echo "AWS CLI configured successfully"
+          # Now use them (will show as *** in logs)
+          echo "AWS_ACCESS_KEY_ID=${{ steps.fetch-aws-creds.outputs.access_key }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ steps.fetch-aws-creds.outputs.secret_key }}" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=${{ steps.fetch-aws-creds.outputs.session_token }}" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=us-west-2" >> $GITHUB_ENV
 
       - name: Download Runner
         run: |
@@ -87,10 +88,3 @@ jobs:
         with:
           name: scan-results
           path: "${{ env.workdir }}/results"
-
-      - name: Cleanup AWS credentials
-        if: always()
-        run: |
-          # Clear environment variables
-          unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_DEFAULT_REGION
-          echo "AWS credentials cleaned up"
