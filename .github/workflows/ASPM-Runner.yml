@@ -65,7 +65,7 @@ jobs:
 
       - name: Download Runner
         run: |
-          SCANNER_URL="s3://${api.github.s3-bucket-name}/scanners/securin-cli/2.0.1/securin-runner"
+          SCANNER_URL="s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-runner"
           
           aws s3 cp "$SCANNER_URL" "${{ env.workdir }}/src/ASPMRunner"
           chmod +x "${{ env.workdir }}/src/ASPMRunner"
