@@ -57,7 +57,7 @@ jobs:
           aws configure set aws_access_key_id "${{ steps.fetch-aws-creds.outputs.access_key }}"
           aws configure set aws_secret_access_key "${{ steps.fetch-aws-creds.outputs.secret_key }}"
           aws configure set aws_session_token "${{ steps.fetch-aws-creds.outputs.session_token }}"
-          aws configure set region "${api.github.aws-region}"
+          aws configure set region "us-west-2"
           
           # Verify AWS configuration works
           aws sts get-caller-identity --query Account --output text
