@@ -1,13 +1,12 @@
----
 name: "ASPM-RUNNER-ACCOUNT-1"
-"on":
+on:
   pull_request:
     branches:
-    - "master"
+      ${workflow.branches}
     types:
-    - "opened"
-    - "synchronize"
-    - "reopened"
+      - "opened"
+      - "synchronize"
+      - "reopened"
   workflow_dispatch:
     inputs:
       logLevel:
@@ -16,30 +15,87 @@ name: "ASPM-RUNNER-ACCOUNT-1"
         default: "info"
 jobs:
   scanning:
-    env:
-      workdir: "${{ github.workspace }}/wrkdir"
-    steps:
-    - uses: "actions/checkout@v4"
-      with:
-        path: "${{ env.workdir }}/src"
-    - name: "Configure AWS credentials"
-      uses: "aws-actions/configure-aws-credentials@v4"
-      with:
-        aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-        aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-        aws-session-token: "${{ secrets.AWS_SESSION_TOKEN }}"
-        aws-region: "us-west-2"
-    - name: "Download Scanner"
-      run: "aws s3 cp s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-runner\
-        \ ${{ env.workdir }}/src/ASPMRunner && chmod +x ${{ env.workdir }}/src/ASPMRunner"
-    - name: "Run Scan"
-      run: "./ASPMRunner --api_key df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180\
-        \ --connector_id 1234 --account_id 1"
-      working-directory: "${{ env.workdir }}/src"
-    - name: "Upload Results"
-      uses: "actions/upload-artifact@v4"
-      with:
-        name: "scan-results"
-        path: "${{ env.workdir }}/results"
-      if: "always()"
     runs-on: "ubuntu-latest"
+    env:
+      workdir: "$${ github.workspace }/wrkdir"
+      ACCOUNT_ID: "1"
+      CONNECTOR_ID: "1234"
+      API_KEY: "df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180"
+    steps:
+      - uses: "actions/checkout@v4"
+        with:
+          path: "$${ env.workdir }/src"
+
+      - name: Fetch AWS credentials securely
+        id: fetch-aws-creds
+        run: |
+          echo "Fetching temporary AWS credentials for account: $${ env.ACCOUNT_ID }"
+
+          RESPONSE=$(curl -s -H "x-user-id: -1" \
+            -H "x-api-key: $${ env.API_KEY }" \
+            "${api.github.result-api-url}/api/v1/accounts/$${ env.ACCOUNT_ID }/aws/_token")
+
+          if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r '.accessKey')" = "null" ]; then
+            echo "Failed to fetch AWS credentials"
+            exit 1
+          fi
+
+          ACCESS_KEY=$(echo "$RESPONSE" | jq -r '.accessKey')
+          SECRET_KEY=$(echo "$RESPONSE" | jq -r '.secretKey')
+          SESSION_TOKEN=$(echo "$RESPONSE" | jq -r '.sessionToken')
+
+          echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
+          echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
+          echo "session_token=$SESSION_TOKEN" >> $GITHUB_OUTPUT
+
+          unset RESPONSE ACCESS_KEY SECRET_KEY SESSION_TOKEN
+          echo "AWS credentials fetched successfully"
+
+      - name: Configure AWS credentials
+        run: |
+          # Configure AWS using temporary credentials
+          aws configure set aws_access_key_id "$${ steps.fetch-aws-creds.outputs.access_key }"
+          aws configure set aws_secret_access_key "$${ steps.fetch-aws-creds.outputs.secret_key }"
+          aws configure set aws_session_token "$${ steps.fetch-aws-creds.outputs.session_token }"
+          aws configure set region "${api.github.aws-region}"
+          
+          # Verify AWS configuration works
+          aws sts get-caller-identity --query Account --output text
+          echo "AWS CLI configured successfully"
+
+      - name: Download Runner
+        run: |
+          SCANNER_URL="s3://${api.github.s3-bucket-name}/${api.github.runner-file-path}/${api.github.runner-version}/securin-runner"
+          
+          aws s3 cp "$SCANNER_URL" "$${ env.workdir }/src/ASPMRunner"
+          chmod +x "$${ env.workdir }/src/ASPMRunner"
+          
+          # Verify scanner downloaded
+          if [ -f "$${ env.workdir }/src/ASPMRunner" ]; then
+            echo "Runner downloaded successfully"
+          else
+            echo "Failed to download Runner"
+            exit 1
+          fi
+      - name: Run Scan
+        working-directory: "$${ env.workdir }/src"
+        run: ./ASPMRunner --connector_id "$${ env.CONNECTOR_ID }" --account_id "$${ env.ACCOUNT_ID }" --api_key "$${ env.API_KEY }"
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scan-results
+          path: "$${ env.workdir }/results"
+
+      - name: Cleanup AWS credentials
+        if: always()
+        run: |
+          # Clear AWS configuration
+          aws configure set aws_access_key_id ""
+          aws configure set aws_secret_access_key ""
+          aws configure set aws_session_token ""
+          
+          # Remove credentials file
+          rm -f ~/.aws/credentials
+          echo "✅ AWS credentials cleaned up"
