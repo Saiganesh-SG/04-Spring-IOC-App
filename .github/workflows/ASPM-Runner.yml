@@ -33,7 +33,9 @@ jobs:
       run: "aws s3 cp s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-runner\
         \ ${{ env.workdir }}/src/ASPMRunner && chmod +x ${{ env.workdir }}/src/ASPMRunner"
     - name: "Run Scan"
-      run: "./ASPMRunner --connector_id 1234 --account_id 1"
+      run: "./ASPMRunner --api_key df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180\
+        \ --connector_id 1234 --account_id 1"
+      working-directory: "${{ env.workdir }}/src"
     - name: "Upload Results"
       uses: "actions/upload-artifact@v4"
       with:
