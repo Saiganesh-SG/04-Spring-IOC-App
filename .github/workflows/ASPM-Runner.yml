@@ -20,7 +20,7 @@ jobs:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "1"
       CONNECTOR_ID: "8436"
-      API_KEY: "2c0da8dc1bf6da387ecef589470179ca2def3555c07d8c8fb27f031c2439011b"
+      API_KEY: "df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180"
     steps:
       - uses: "actions/checkout@v4"
         with:
