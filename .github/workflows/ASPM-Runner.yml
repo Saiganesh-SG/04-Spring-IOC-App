@@ -2,7 +2,7 @@ name: "ASPM-RUNNER-ACCOUNT-1"
 on:
   pull_request:
     branches:
-    - "master"
+      - "master"
     types:
       - "opened"
       - "synchronize"
@@ -26,7 +26,7 @@ jobs:
         with:
           path: "${{ env.workdir }}/src"
 
-      - name: Fetch AWS credentials securely
+      - name: Fetch and mask AWS credentials securely
         id: fetch-aws-creds
         run: |
           echo "Fetching temporary AWS credentials for account: ${{ env.ACCOUNT_ID }}"
@@ -44,25 +44,25 @@ jobs:
           SECRET_KEY=$(echo "$RESPONSE" | jq -r '.secretKey')
           SESSION_TOKEN=$(echo "$RESPONSE" | jq -r '.sessionToken')
 
+          # Mask immediately using shell variables (never print the value)
+          echo "::add-mask::$ACCESS_KEY"
+          echo "::add-mask::$SECRET_KEY"
+          echo "::add-mask::$SESSION_TOKEN"
+
           echo "access_key=$ACCESS_KEY" >> $GITHUB_OUTPUT
           echo "secret_key=$SECRET_KEY" >> $GITHUB_OUTPUT
           echo "session_token=$SESSION_TOKEN" >> $GITHUB_OUTPUT
 
+          # Set as environment variables (never print the value)
+          {
+            echo "AWS_ACCESS_KEY_ID=$ACCESS_KEY"
+            echo "AWS_SECRET_ACCESS_KEY=$SECRET_KEY"
+            echo "AWS_SESSION_TOKEN=$SESSION_TOKEN"
+            echo "AWS_DEFAULT_REGION=us-west-2"
+          } >> $GITHUB_ENV
+
           unset RESPONSE ACCESS_KEY SECRET_KEY SESSION_TOKEN
-          echo "AWS credentials fetched successfully"
-
-      - name: Store AWS credentials as secrets
-        run: |
-          # These will be automatically masked by GitHub
-          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.access_key }}"
-          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.secret_key }}"
-          echo "::add-mask::${{ steps.fetch-aws-creds.outputs.session_token }}"
-
-          # Now use them (will show as *** in logs)
-          echo "AWS_ACCESS_KEY_ID=${{ steps.fetch-aws-creds.outputs.access_key }}" >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=${{ steps.fetch-aws-creds.outputs.secret_key }}" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=${{ steps.fetch-aws-creds.outputs.session_token }}" >> $GITHUB_ENV
-          echo "AWS_DEFAULT_REGION=us-west-2" >> $GITHUB_ENV
+          echo "AWS credentials fetched and masked successfully"
 
       - name: Download Runner
         run: |
