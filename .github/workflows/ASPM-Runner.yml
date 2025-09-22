@@ -21,8 +21,8 @@ jobs:
       ACCOUNT_ID: "1"
       CONNECTOR_ID: "8436"
       API_KEY: "7a505551cdf22bc66ba1182e92454f036633ceb69d528b086a8c6f02f52da789"
-      XDG_CONFIG_HOME: "${{ env.workdir }}/.config"
-      SECURIN_LOG_DIR: "${{ env.workdir }}/logs"
+      XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
+      SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
   
     steps:
       - uses: "actions/checkout@v4"
