@@ -103,8 +103,7 @@ jobs:
           ./ASPMRunner \
             --connector_id "${{ env.CONNECTOR_ID }}" \
             --account_id "${{ env.ACCOUNT_ID }}" \
-            --api_key "${{ env.API_KEY }}" \
-            --log_file "${{ env.workdir }}/logs/securin-cli.log"
+            --api_key "${{ env.API_KEY }}"
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
