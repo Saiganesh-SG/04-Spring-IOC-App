@@ -21,8 +21,8 @@ jobs:
       ACCOUNT_ID: "1"
       CONNECTOR_ID: "8436"
       API_KEY: "7a505551cdf22bc66ba1182e92454f036633ceb69d528b086a8c6f02f52da789"
-      XDG_CONFIG_HOME: "${{ github.workspace }}/.config"
-      SECURIN_LOG_DIR: "${{ github.workspace }}/logs"
+      XDG_CONFIG_HOME: "${{ env.workdir }}/.config"
+      SECURIN_LOG_DIR: "${{ env.workdir }}/logs"
   
     steps:
       - uses: "actions/checkout@v4"
@@ -32,9 +32,9 @@ jobs:
       - name: Setup scanner directories
         run: |
           mkdir -p "${{ env.workdir }}/.config/Securin"
-          mkdir -p "${{ env.SECURIN_LOG_DIR }}"
+          mkdir -p "${{ env.workdir }}/logs"
           chmod -R 755 "${{ env.workdir }}/.config"
-          chmod -R 755 "${{ env.SECURIN_LOG_DIR }}"
+          chmod -R 755 "${{ env.workdir }}/logs"
 
       - name: Fetch and mask AWS credentials securely
         id: fetch-aws-creds
