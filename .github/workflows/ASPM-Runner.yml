@@ -32,9 +32,9 @@ jobs:
       - name: Setup scanner directories
         run: |
           mkdir -p "${{ env.workdir }}/.config/Securin"
-          mkdir -p "${{ env.workspace }}/logs"
+          mkdir -p "${{ env.SECURIN_LOG_DIR }}"
           chmod -R 755 "${{ env.workdir }}/.config"
-          chmod -R 755 "${{ env.workspace }}/logs"
+          chmod -R 755 "${{ env.SECURIN_LOG_DIR }}"
 
       - name: Fetch and mask AWS credentials securely
         id: fetch-aws-creds
