@@ -79,8 +79,16 @@ jobs:
             exit 1
           fi
       - name: Run Scan
-        working-directory: "${{ env.workdir }}/src"
-        run: ./ASPMRunner --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}"
+        run: |
+          # Create writable directories
+          mkdir -p "${{ env.workdir }}/scanner-logs"
+    
+          # Run from writable directory with log override
+          cd "${{ env.workdir }}/scanner-logs"
+          SECURIN_LOG_DIR="${{ env.workdir }}/scanner-logs" "${{ env.workdir }}/src/ASPMRunner" \
+            --connector_id "${{ env.CONNECTOR_ID }}" \
+            --account_id "${{ env.ACCOUNT_ID }}" \
+            --api_key "${{ env.API_KEY }}"
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
