@@ -65,8 +65,6 @@ jobs:
 
       - name: Run Scan
         working-directory: "${{ env.workdir }}/src"
-        env:
-          HOME: "${{ env.workdir }}"
         run: |
           touch "${{ env.workdir }}/logs/securin-cli.log"
           chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
