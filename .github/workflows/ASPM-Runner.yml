@@ -82,5 +82,4 @@ jobs:
         if: always()
         with:
           name: scan-results
-
           path: "${{ env.workdir }}/results"
