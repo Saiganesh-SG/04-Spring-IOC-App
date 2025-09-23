@@ -75,7 +75,7 @@ jobs:
           touch "${{ env.workdir }}/logs/securin-cli.log"
           chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
           
-          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}"
+          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}" --scan_type SCA,SECRETS,CONTAINER,IAC,MCP
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
