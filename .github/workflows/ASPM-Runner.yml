@@ -66,8 +66,6 @@ jobs:
       - name: Run Scan
         working-directory: "${{ env.workdir }}/src"
         run: |
-          touch "${{ env.workdir }}/logs/securin-cli.log"
-          chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
           ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}"
 
       - name: Upload Results
