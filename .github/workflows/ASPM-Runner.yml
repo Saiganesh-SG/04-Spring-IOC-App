@@ -20,21 +20,11 @@ jobs:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "1"
       CONNECTOR_ID: "8436"
-      API_KEY: "7a505551cdf22bc66ba1182e92454f036633ceb69d528b086a8c6f02f52da789"
-      XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
-      SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
-  
+      API_KEY: "df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180"
     steps:
       - uses: "actions/checkout@v4"
         with:
           path: "${{ env.workdir }}/src"
-
-      - name: Setup scanner directories
-        run: |
-          mkdir -p "${{ env.workdir }}/.config/Securin"
-          mkdir -p "${{ env.workdir }}/logs"
-          chmod -R 755 "${{ env.workdir }}/.config"
-          chmod -R 755 "${{ env.workdir }}/logs"
 
       - name: Fetch and mask AWS credentials securely
         id: fetch-aws-creds
@@ -76,7 +66,7 @@ jobs:
 
       - name: Download Runner
         run: |
-          SCANNER_URL="s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-aspm-ubuntu-2.4.0"
+          SCANNER_URL="s3://securin-qa-shiftleft/scanners/securin-cli/2.0.1/securin-runner"
           
           aws s3 cp "$SCANNER_URL" "${{ env.workdir }}/src/ASPMRunner"
           chmod +x "${{ env.workdir }}/src/ASPMRunner"
@@ -90,20 +80,7 @@ jobs:
           fi
       - name: Run Scan
         working-directory: "${{ env.workdir }}/src"
-        env:
-          # ADD THESE ENVIRONMENT VARIABLES:
-          XDG_CONFIG_HOME: "${{ env.workdir }}/.config"
-          SECURIN_LOG_FILE: "${{ env.workdir }}/logs/securin-cli.log"
-          HOME: "${{ env.workdir }}"
-        run: |
-          # Create log file first
-          touch "${{ env.workdir }}/logs/securin-cli.log"
-          chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
-    
-          ./ASPMRunner \
-            --connector_id "${{ env.CONNECTOR_ID }}" \
-            --account_id "${{ env.ACCOUNT_ID }}" \
-            --api_key "${{ env.API_KEY }}"
+        run: ./ASPMRunner --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}"
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
