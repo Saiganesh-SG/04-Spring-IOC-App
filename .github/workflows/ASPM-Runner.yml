@@ -22,6 +22,8 @@ jobs:
       ACCOUNT_ID: "1"
       CONNECTOR_ID: "8436"
       API_KEY: "df587299f15b01f64e5886c2308f8ad95cb50d755758cb7e2e41d1990c6b7180"
+      XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
+      SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
 
     steps:
       - uses: "actions/checkout@v4"
@@ -65,7 +67,14 @@ jobs:
 
       - name: Run Scan
         working-directory: "${{ env.workdir }}/src"
+        env:
+          XDG_CONFIG_HOME: "${{ env.workdir }}/.config"
+          SECURIN_LOG_FILE: "${{ env.workdir }}/logs/securin-cli.log"
+          HOME: "${{ env.workdir }}"
         run: |
+          touch "${{ env.workdir }}/logs/securin-cli.log"
+          chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
+          
           ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ env.API_KEY }}"
 
       - name: Upload Results
@@ -73,4 +82,5 @@ jobs:
         if: always()
         with:
           name: scan-results
+
           path: "${{ env.workdir }}/results"
