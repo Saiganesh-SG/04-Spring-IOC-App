@@ -1,4 +1,4 @@
-name: "ASPM-RUNNER"
+name: "Test-UAT-ASPM-RUNNER"
 on:
   pull_request:
     branches:
