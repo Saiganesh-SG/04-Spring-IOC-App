@@ -41,7 +41,7 @@ jobs:
           # Fetch and configure AWS credentials
           echo "Fetching AWS credentials..."
           RESPONSE=$(curl -s -H "API_KEY: "${{ secrets.API_KEY }}"" \
-            "https://apigateway.qa.securin.io/resultapi/api/v1/accounts/${{ env.ACCOUNT_ID }}/aws/_token")
+            "https://apigateway.uat.securin.io/resultapi/api/v1/accounts/${{ env.ACCOUNT_ID }}/aws/_token")
           
           ACCESS_KEY=$(echo "$RESPONSE" | jq -r '.accessKey')
           SECRET_KEY=$(echo "$RESPONSE" | jq -r '.secretKey')
