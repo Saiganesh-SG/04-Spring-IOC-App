@@ -20,7 +20,7 @@ jobs:
     env:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "5005"
-      CONNECTOR_ID: "4225"
+      CONNECTOR_ID: "4233"
       XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
       SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
 
