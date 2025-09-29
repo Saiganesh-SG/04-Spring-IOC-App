@@ -1,4 +1,4 @@
-name: "ASPM-RUNNER-ACCOUNT-1"
+name: "ASPM-RUNNER"
 on:
   pull_request:
     branches:
@@ -19,8 +19,8 @@ jobs:
     runs-on: "ubuntu-latest"
     env:
       workdir: "${{ github.workspace }}/wrkdir"
-      ACCOUNT_ID: "1"
-      CONNECTOR_ID: "8436"
+      ACCOUNT_ID: "1235152"
+      CONNECTOR_ID: "8664"
       XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
       SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
 
