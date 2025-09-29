@@ -42,7 +42,7 @@ jobs:
         run: |
           # Fetch and configure AWS credentials
           echo "Fetching AWS credentials..."
-          RESPONSE=$(curl -s -H "API_KEY: ${{ secrets.QA_API_KEY }}" \
+          RESPONSE=$(curl -s -H "API_KEY: e95c020ec3a08a78cfafde0750af9203892685a907f2fbe952b9d68b11b26512" \
             "https://apigateway.qa.securin.io/resultapi/api/v1/accounts/${{ env.ACCOUNT_ID }}/aws/_token")
           
           ACCESS_KEY=$(echo "$RESPONSE" | jq -r '.accessKey')
@@ -76,11 +76,12 @@ jobs:
           touch "${{ env.workdir }}/logs/securin-cli.log"
           chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
           
-          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ secrets.API_KEY }}" --scan_type SCA,SECRETS,CONTAINER,IAC,MCP --scan_id "${{ env.SCAN_ID }}" --scan_sequence_id "${{ env.SCAN_SEQUENCE_ID }}"
+          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key e95c020ec3a08a78cfafde0750af9203892685a907f2fbe952b9d68b11b26512 --scan_type SCA,SECRETS,CONTAINER,IAC,MCP --scan_id "${{ env.SCAN_ID }}" --scan_sequence_id "${{ env.SCAN_SEQUENCE_ID }}"
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: scan-results
+
           path: "${{ env.workdir }}/results"
