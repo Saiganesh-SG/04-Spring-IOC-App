@@ -21,8 +21,8 @@ jobs:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "1235152"
       CONNECTOR_ID: "8664"
-      SCAN_ID: "18938"
-      SCAN_SEQUENCE_ID: "18"
+      SCAN_ID: "18939"
+      SCAN_SEQUENCE_ID: "19"
       XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
       SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
 
