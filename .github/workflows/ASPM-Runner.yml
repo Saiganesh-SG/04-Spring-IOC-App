@@ -42,8 +42,8 @@ jobs:
         run: |
           # Fetch and configure AWS credentials
           echo "Fetching AWS credentials..."
-          RESPONSE=$(curl -s -H "API_KEY: e95c020ec3a08a78cfafde0750af9203892685a907f2fbe952b9d68b11b26512" \
-            "https://apigateway.qa.securin.io/resultapi/api/v1/accounts/${{ env.ACCOUNT_ID }}/aws/_token")
+          RESPONSE=$(curl -s -H "x-user-id: -1" \
+            "https://slresultapi.qa.securin.io/resultapi/api/v1/accounts/${{ env.ACCOUNT_ID }}/aws/_token")
           
           ACCESS_KEY=$(echo "$RESPONSE" | jq -r '.accessKey')
           SECRET_KEY=$(echo "$RESPONSE" | jq -r '.secretKey')
@@ -85,3 +85,4 @@ jobs:
           name: scan-results
 
           path: "${{ env.workdir }}/results"
+
