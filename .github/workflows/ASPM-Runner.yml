@@ -21,8 +21,6 @@ jobs:
       workdir: "${{ github.workspace }}/wrkdir"
       ACCOUNT_ID: "1235152"
       CONNECTOR_ID: "8664"
-      SCAN_ID: "18948"
-      SCAN_SEQUENCE_ID: "20"
       XDG_CONFIG_HOME: "${{ github.workspace }}/wrkdir/.config"
       SECURIN_LOG_DIR: "${{ github.workspace }}/wrkdir/logs"
 
@@ -76,7 +74,7 @@ jobs:
           touch "${{ env.workdir }}/logs/securin-cli.log"
           chmod 666 "${{ env.workdir }}/logs/securin-cli.log"
           
-          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ secrets.QA_API_KEY }}" --scan_type SCA,SECRETS,CONTAINER,IAC,MCP --scan_id "${{ env.SCAN_ID }}" --scan_sequence_id "${{ env.SCAN_SEQUENCE_ID }}"
+          ./ASPMRunner scan --connector_id "${{ env.CONNECTOR_ID }}" --account_id "${{ env.ACCOUNT_ID }}" --api_key "${{ secrets.QA_API_KEY }}" --scan_type SCA,SECRETS,CONTAINER,IAC,MCP
 
       - name: Upload Results
         uses: actions/upload-artifact@v4
