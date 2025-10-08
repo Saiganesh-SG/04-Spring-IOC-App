@@ -61,6 +61,10 @@ jobs:
           aws s3 cp "$SCANNER_URL" "${{ env.workdir }}/src/ASPMRunner"
           chmod +x "${{ env.workdir }}/src/ASPMRunner"
           
+      - name: Inspect ASPMRunner binary
+        run: |
+          file "${{ env.workdir }}/src/ASPMRunner"
+          
           [ -f "${{ env.workdir }}/src/ASPMRunner" ] && echo "Runner ready" || (echo "Download failed" && exit 1)
           unset RESPONSE ACCESS_KEY SECRET_KEY SESSION_TOKEN
 
