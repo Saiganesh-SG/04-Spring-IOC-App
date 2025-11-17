@@ -1,0 +1,7 @@
+{
+  "aws_access_key_id": "AKIAFAKEACCESSKEY1234",
+  "aws_secret_access_key": "FAKESECRETKEY1234567890",
+  "database_password": "SuperSecretPassword123!",
+  "api_token": "fake-api-token-abcdef123456",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nFAKEKEYDATA1234567890\n-----END PRIVATE KEY-----"
+}
